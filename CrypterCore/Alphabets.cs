@@ -10,5 +10,10 @@ namespace CrypterCore
     {
         public static IAlphabet RUSSIAN => new RussianAlphabet();
         public static IAlphabet ENGLISH => new EnglishAlphabet();
+
+        public static List<IAlphabet> AlphabetList()
+        {
+            return new List<IAlphabet> { RUSSIAN, ENGLISH };
+        }
     }
 }

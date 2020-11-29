@@ -61,7 +61,7 @@ namespace CrypterCore
 
         public override string ToString()
         {
-            return "Russian alphabet";
+            return "Русский";
         }
     }
 }

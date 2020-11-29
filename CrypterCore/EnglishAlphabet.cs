@@ -38,5 +38,10 @@ namespace CrypterCore
                     ? c - 'A'
                     : -1;
         }
+
+        public override string ToString()
+        {
+            return "English";
+        }
     }
 }
