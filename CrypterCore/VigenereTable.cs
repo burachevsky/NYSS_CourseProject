@@ -19,12 +19,14 @@ namespace CrypterCore
 
         public char EncryptChar(char value, char key)
         {
-            return cyclicAlphabet[alphabet.Position(value) + alphabet.Position(key)];
+            var result = cyclicAlphabet[alphabet.Position(value) + alphabet.Position(key)];
+            return char.IsUpper(value) ? char.ToUpper(result) : result;
         }
 
         public char DecryptChar(char value, char key)
         {
-            return cyclicAlphabet[alphabet.Position(value) - alphabet.Position(key)];
+            var result = cyclicAlphabet[alphabet.Position(value) - alphabet.Position(key)];
+            return char.IsUpper(value) ? char.ToUpper(result) : result;
         }
     }
 }

@@ -9,5 +9,6 @@ namespace CrypterCore
     public class Alphabets
     {
         public static IAlphabet RUSSIAN => new RussianAlphabet();
+        public static IAlphabet ENGLISH => new EnglishAlphabet();
     }
 }

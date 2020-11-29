@@ -61,5 +61,24 @@ namespace CrypterCoreTests
             var result = cipher.Decrypt(input);
             Assert.AreEqual(res, result);
         }
+
+        [TestMethod]
+        public void EncryptTest2()
+        {
+            try
+            {
+                var input = "ATTACKATDAWN";
+                var key = "LEMONLEMONLE";
+                var res = "LXFOPVEFRNHR";
+
+                var cipher = new VigenereCipher(key, Alphabets.ENGLISH);
+                var result = cipher.Encrypt(input);
+                Assert.AreEqual(res, result);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.GetType() + " " + e.StackTrace);
+            }
+        }
     }
 }

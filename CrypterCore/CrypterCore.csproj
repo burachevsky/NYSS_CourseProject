@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CyclicArray.cs" />
+    <Compile Include="EnglishAlphabet.cs" />
     <Compile Include="IAlphabet.cs" />
     <Compile Include="ICrypter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
