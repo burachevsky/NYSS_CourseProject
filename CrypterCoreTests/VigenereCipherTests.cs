@@ -68,7 +68,7 @@ namespace CrypterCoreTests
             try
             {
                 var input = "ATTACKATDAWN";
-                var key = "LEMONLEMONLE";
+                var key = "LEMON";
                 var res = "LXFOPVEFRNHR";
 
                 var cipher = new VigenereCipher(key, Alphabets.ENGLISH);
