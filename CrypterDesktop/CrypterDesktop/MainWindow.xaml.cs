@@ -25,6 +25,8 @@ namespace CrypterDesktop
     {
         public VigenereCipher Cipher = new VigenereCipher("Скорпион", Alphabets.RUSSIAN);
 
+        public IAlphabet CurrentAlphabet => ComboBox_Language.SelectedItem as IAlphabet;
+
         public bool IsEncrypting
         {
             get => RadioButton_Encrypt.IsChecked != null && (bool) RadioButton_Encrypt.IsChecked;
@@ -43,8 +45,7 @@ namespace CrypterDesktop
             }
         }
 
-        public bool IsJitCiphering => 
-            CheckBox_JitCiphering.IsChecked != null && (bool) CheckBox_JitCiphering.IsChecked;
+        public bool IsJitCiphering { get; private set; }
 
 
         public MainWindow()
@@ -56,7 +57,7 @@ namespace CrypterDesktop
             {
                 if (IsJitCiphering)
                 {
-                    Button_Run_OnClick(null, null);
+                    Update();
                 }
             };
 
@@ -64,12 +65,35 @@ namespace CrypterDesktop
             {
                 if (IsJitCiphering)
                 {
-                    Button_Run_OnClick(null, null);
+                    Update();
                 }
                 else
                 {
                     ValidateKey();
                 }
+            };
+
+            var alphabets = Alphabets.AlphabetList();
+            ComboBox_Language.ItemsSource = alphabets;
+            ComboBox_Language.SelectedItem = alphabets[0];
+            Cipher = new VigenereCipher("Скорпион", alphabets[0]);
+
+            ComboBox_Language.SelectionChanged += Button_Run_OnClick;
+            RadioButton_Encrypt.Checked += Button_Run_OnClick;
+            RadioButton_Decrypt.Checked += Button_Run_OnClick;
+
+            CheckBox_JitCiphering.Checked += (e, a) =>
+            {
+                IsJitCiphering = true;
+                Button_Run.Visibility =  Visibility.Hidden;
+                Update();
+            };
+
+            CheckBox_JitCiphering.Unchecked += (e, a) =>
+            {
+                IsJitCiphering = false;
+                Button_Run.Visibility = Visibility.Visible;
+                Update();
             };
         }
 
@@ -83,7 +107,7 @@ namespace CrypterDesktop
             catch (Exception e)
             {
                 MessageBox.Show(
-                    $"При чтении файла возникла ошибка: {e.GetType()}\nВозможно, файл поврежден ил отсутствует");
+                    $"При чтении файла возникла ошибка: {e.GetType()}\nВозможно, файл поврежден или отсутствует");
             }
         }
 
@@ -92,22 +116,28 @@ namespace CrypterDesktop
             var curKey = TextBox_Key.Text;
             try
             {
-                if (!curKey.Equals(Cipher.KeyAsString))
+                if (!curKey.Equals(Cipher.KeyAsString) || !CurrentAlphabet.Equals(Cipher.Alphabet))
                 {
-                    Cipher = new VigenereCipher(curKey, Alphabets.RUSSIAN);
+                    Cipher = new VigenereCipher(curKey, CurrentAlphabet);
                 }
 
-                TextBox_Key.BorderBrush = Brushes.Green;
+                Colors.InitTextBoxBorderColor(TextBox_Key, true);
                 return true;
             }
             catch (ArgumentException)
             { 
-                TextBox_Key.BorderBrush = Brushes.Red;
+                Colors.InitTextBoxBorderColor(TextBox_Key, false);
+                TextBox_Output.Text = "";
                 return false;
             }
         }
 
         private void Button_Run_OnClick(object sender, RoutedEventArgs e)
+        {
+            Update();
+        }
+
+        private void Update()
         {
             if (ValidateKey())
             {
