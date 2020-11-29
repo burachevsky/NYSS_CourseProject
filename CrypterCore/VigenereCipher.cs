@@ -6,7 +6,11 @@ namespace CrypterCore
     public class VigenereCipher : ICrypter
     {
         public CyclicArray<char> Key { get; }
+
+        public string KeyAsString => new string(Key.ToArray());
+
         private readonly VigenereTable table;
+
         public IAlphabet Alphabet { get; }
 
         public VigenereCipher(string key, IAlphabet alphabet)
@@ -20,7 +24,7 @@ namespace CrypterCore
 
             if (Key.Length == 0)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentException();
             }
 
             table = new VigenereTable(alphabet);
