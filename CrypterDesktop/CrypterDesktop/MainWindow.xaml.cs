@@ -27,6 +27,8 @@ namespace CrypterDesktop
 
         public IAlphabet CurrentAlphabet => ComboBox_Language.SelectedItem as IAlphabet;
 
+        private FileManager FileManager { get; }
+
         public bool IsEncrypting
         {
             get => RadioButton_Encrypt.IsChecked != null && (bool) RadioButton_Encrypt.IsChecked;
@@ -51,6 +53,8 @@ namespace CrypterDesktop
         public MainWindow()
         {
             InitializeComponent();
+            FileManager = new FileManager(this);
+            
             IsEncrypting = false;
 
             TextBox_Input.TextChanged += (o, a) =>
@@ -97,12 +101,22 @@ namespace CrypterDesktop
             };
         }
 
-        public void DecryptCommandLineArgFile(string path)
+        public void SetDefaultConfiguration()
+        {
+            TextBox_Input.Text = "";
+            TextBox_Output.Text = "";
+            TextBox_Key.Text = "Скорпион";
+            ComboBox_Language.SelectedItem = ComboBox_Language.Items[0];
+            IsEncrypting = false;
+            Cipher = new VigenereCipher(TextBox_Key.Text, CurrentAlphabet);
+        }
+
+        public void OpenFile(string path)
         {
             try
             {
-                TextBox_Input.Text = File.ReadAllText(path);
-                Button_Run.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                TextBox_Input.Text = FileManager.ReadFile(path);
+                Update();
             }
             catch (Exception e)
             {
@@ -146,6 +160,21 @@ namespace CrypterDesktop
                     ? Cipher.Encrypt(input) 
                     : Cipher.Decrypt(input);
             }
+        }
+
+        private void MenuItem_New_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void MenuItem_Open_OnClick(object sender, RoutedEventArgs e)
+        {
+            FileManager.OpenReadFileDialog();
+        }
+
+        private void MenuItem_Exit_OnClick(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }

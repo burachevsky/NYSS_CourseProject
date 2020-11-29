@@ -22,7 +22,7 @@ namespace CrypterDesktop
             {
                 try
                 {
-                    mainWindow.DecryptCommandLineArgFile(e.Args[0]);
+                    mainWindow.OpenFile(e.Args[0]);
                 }
                 catch (Exception ex)
                 {
@@ -35,7 +35,7 @@ namespace CrypterDesktop
 
         public static void Run(Action action)
         {
-            Application.Current.Dispatcher.InvokeAsync(() =>
+            Current.Dispatcher.InvokeAsync(() =>
             {
                 try
                 {

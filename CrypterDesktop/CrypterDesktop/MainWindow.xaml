@@ -149,9 +149,11 @@
 
         <Menu HorizontalAlignment="Left" Height="21" VerticalAlignment="Top" Width="794" Margin="0,0,-0.4,0">
             <MenuItem Header="Файл">
-                <System:String>БИ</System:String>
+                <MenuItem x:Name="MenuItem_New" Header="Новый" Click="MenuItem_New_OnClick"/>
+                <MenuItem x:Name="MenuItem_Open" Header="Открыть" Click="MenuItem_Open_OnClick"/>
+                <MenuItem x:Name="MenuItem_Exit" Header="Выход" Click="MenuItem_Exit_OnClick"/>
             </MenuItem>
-            <MenuItem Header="О программе" />
+            <MenuItem Header="О программе"/>
         </Menu>
 
 
