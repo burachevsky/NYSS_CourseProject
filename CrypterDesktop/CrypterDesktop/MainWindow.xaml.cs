@@ -23,7 +23,7 @@ namespace CrypterDesktop
     /// </summary>
     public partial class MainWindow : Window
     {
-        public VigenereCipher Cipher = new VigenereCipher("Скорпион", Alphabets.RUSSIAN);
+        public VigenereCipher Cipher;
 
         public IAlphabet CurrentAlphabet => ComboBox_Language.SelectedItem as IAlphabet;
 
@@ -31,7 +31,7 @@ namespace CrypterDesktop
 
         public bool IsEncrypting
         {
-            get => RadioButton_Encrypt.IsChecked != null && (bool) RadioButton_Encrypt.IsChecked;
+            get => RadioButton_Encrypt.IsChecked == true;
             set
             {
                 if (value)
@@ -63,6 +63,10 @@ namespace CrypterDesktop
                 {
                     Update();
                 }
+                else
+                {
+                    TextBox_Output.Text = "";
+                }
             };
 
             TextBox_Key.TextChanged += (o, a) =>
@@ -73,6 +77,7 @@ namespace CrypterDesktop
                 }
                 else
                 {
+                    TextBox_Output.Text = "";
                     ValidateKey();
                 }
             };
@@ -162,11 +167,6 @@ namespace CrypterDesktop
             }
         }
 
-        private void MenuItem_New_OnClick(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void MenuItem_Open_OnClick(object sender, RoutedEventArgs e)
         {
             FileManager.OpenReadFileDialog();
@@ -175,6 +175,11 @@ namespace CrypterDesktop
         private void MenuItem_Exit_OnClick(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void MenuItem_Save_OnClick(object sender, RoutedEventArgs e)
+        {
+            FileManager.OpenSaveFileDialog(TextBox_Output.Text);
         }
     }
 }
