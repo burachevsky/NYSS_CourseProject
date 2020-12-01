@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:CrypterMobile.ViewModels;assembly=CrypterMobile"
+             x:Class="CrypterMobile.Views.CrypterPage"
+             Title="Шифр Виженера">
+
+    <ContentPage.BindingContext>
+        <viewModels:CrypterViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <x:String x:Key="InputText">Исходный текст</x:String>
+            <x:String x:Key="Key">Ключ</x:String>
+            <x:String x:Key="OutputText">Результат</x:String>
+            <x:String x:Key="Run">Шифровать</x:String>
+            <x:String x:Key="Mode">Режим</x:String>
+            <x:String x:Key="Language">Язык</x:String>
+            <x:String x:Key="Encrypt">Шифрование</x:String>
+            <x:String x:Key="Decrypt">Дешифрование</x:String>
+            <x:String x:Key="KeyMustBeValid">Ключ должен содержать хотя бы 1 символ из текущего алфавита</x:String>
+            <x:String x:Key="Reverse">Инвертировать</x:String>
+            <Color x:Key="LabelTextColor">LightSlateGray</Color>
+            <Color x:Key="EditorBackgroundColor">AliceBlue</Color>
+            <Color x:Key="ErrorTextColor">Red</Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+
+        <ScrollView Grid.Row="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="0.5*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <StackLayout Grid.Row="0"
+                             Orientation="Vertical"
+                             Margin="20">
+                    <Label x:Name="Label_Input"
+                           Text="{StaticResource InputText}"
+
+                           TextColor="{StaticResource LabelTextColor}" />
+                    <Editor x:Name="Editor_Input"
+                            AutoSize="TextChanges"
+                            BackgroundColor="{StaticResource EditorBackgroundColor}"
+                            Text="{Binding InputText}"
+                            PlaceholderColor="{StaticResource LabelTextColor}"
+                            TextColor="{StaticResource LabelTextColor}" />
+                </StackLayout>
+
+                <StackLayout Grid.Row="1" Orientation="Vertical" Margin="20">
+                    <Label x:Name="Label_Key"
+                           Text="{StaticResource Key}"
+                           TextColor="{StaticResource LabelTextColor}" />
+                    <Editor x:Name="Editor_Key"
+                            AutoSize="TextChanges"
+                            BackgroundColor="{StaticResource EditorBackgroundColor}"
+                            Text="{Binding KeyText}"
+                            PlaceholderColor="{StaticResource LabelTextColor}"
+                            TextColor="{StaticResource LabelTextColor}" />
+                    <Label Text="{StaticResource KeyMustBeValid}"
+                           TextColor="{StaticResource ErrorTextColor}"
+                           IsVisible="{Binding IsKeyNotValid}" />
+                </StackLayout>
+
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackLayout Grid.Column="0"
+                                 Orientation="Vertical"
+                                 Margin="20, 20, 0, 20">
+                        <Label
+                            x:Name="Label_Mode"
+                            Text="{StaticResource Mode}"
+                            TextColor="{StaticResource LabelTextColor}" />
+                        <Picker
+                            x:Name="Picker_Mode"
+                            TextColor="{StaticResource LabelTextColor}"
+                            SelectedIndex="{Binding CurrentModeIndex}"
+                            FontSize="18">
+                            <Picker.Items>
+                                <x:String>Шифрование</x:String>
+                                <x:String>Дешифрование</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </StackLayout>
+
+                    <StackLayout Grid.Column="1" Orientation="Vertical"
+                                 Margin="20, 20, 0, 20">
+                        <Label x:Name="Label_Language"
+
+                               Text="{StaticResource Language}"
+                               TextColor="{StaticResource LabelTextColor}" />
+                        <Picker x:Name="Picker_Language"
+                                FontSize="18"
+                                TextColor="{StaticResource LabelTextColor}"
+                                SelectedIndex="{Binding CurrentAlphabetIndex}"
+                                ItemsSource="{Binding Languages}" />
+                    </StackLayout>
+                </Grid>
+
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="1" x:Name="Button_Reverse"
+                            Text="{StaticResource Reverse}"
+                            Command="{Binding ReverseCommand}" 
+                            HeightRequest="30" />
+                </Grid>
+
+                <StackLayout Grid.Row="4"
+                             Orientation="Vertical"
+                             Margin="20">
+                    <Label x:Name="Label_Output"
+                           Text="{StaticResource OutputText}"
+                           TextColor="{StaticResource LabelTextColor}" />
+                    <Editor x:Name="Editor_Output"
+                            AutoSize="TextChanges"
+                            Text="{Binding OutputText}"
+                            PlaceholderColor="{StaticResource LabelTextColor}"
+                            IsReadOnly="True"
+                            BackgroundColor="{StaticResource EditorBackgroundColor}"
+                            TextColor="{StaticResource LabelTextColor}" />
+                </StackLayout>
+            </Grid>
+        </ScrollView>
+
+        <Button Grid.Row="1"
+                x:Name="Button_Run"
+                Text="{StaticResource Run}"
+                Command="{Binding RunCommand}" />
+    </Grid>
+</ContentPage>

@@ -1,0 +1,11 @@
+C:\Users\isasp\source\repos\NYSS_CourseProject\NYSS_CourseProject\CrypterMobile\CrypterMobile\CrypterMobile\bin\Debug\netstandard2.0\CrypterMobile.deps.json
+C:\Users\isasp\source\repos\NYSS_CourseProject\NYSS_CourseProject\CrypterMobile\CrypterMobile\CrypterMobile\bin\Debug\netstandard2.0\CrypterMobile.dll
+C:\Users\isasp\source\repos\NYSS_CourseProject\NYSS_CourseProject\CrypterMobile\CrypterMobile\CrypterMobile\bin\Debug\netstandard2.0\ref\CrypterMobile.dll
+C:\Users\isasp\source\repos\NYSS_CourseProject\NYSS_CourseProject\CrypterMobile\CrypterMobile\CrypterMobile\bin\Debug\netstandard2.0\CrypterMobile.pdb
+C:\Users\isasp\source\repos\NYSS_CourseProject\NYSS_CourseProject\CrypterMobile\CrypterMobile\netstandard2.0\CrypterMobile.csprojAssemblyReference.cache
+C:\Users\isasp\source\repos\NYSS_CourseProject\NYSS_CourseProject\CrypterMobile\CrypterMobile\netstandard2.0\CrypterMobile.AssemblyInfoInputs.cache
+C:\Users\isasp\source\repos\NYSS_CourseProject\NYSS_CourseProject\CrypterMobile\CrypterMobile\netstandard2.0\CrypterMobile.AssemblyInfo.cs
+C:\Users\isasp\source\repos\NYSS_CourseProject\NYSS_CourseProject\CrypterMobile\CrypterMobile\netstandard2.0\CrypterMobile.csproj.CoreCompileInputs.cache
+C:\Users\isasp\source\repos\NYSS_CourseProject\NYSS_CourseProject\CrypterMobile\CrypterMobile\netstandard2.0\CrypterMobile.dll
+C:\Users\isasp\source\repos\NYSS_CourseProject\NYSS_CourseProject\CrypterMobile\CrypterMobile\netstandard2.0\ref\CrypterMobile.dll
+C:\Users\isasp\source\repos\NYSS_CourseProject\NYSS_CourseProject\CrypterMobile\CrypterMobile\netstandard2.0\CrypterMobile.pdb
