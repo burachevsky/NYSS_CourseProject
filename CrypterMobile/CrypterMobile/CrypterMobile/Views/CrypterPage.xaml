@@ -58,10 +58,9 @@
                              Margin="20">
                     <Label x:Name="Label_Input"
                            Text="{StaticResource InputText}"
-
                            TextColor="{StaticResource LabelTextColor}" />
                     <Editor x:Name="Editor_Input"
-                            AutoSize="TextChanges"
+                            AutoSize="TextChanges" 
                             BackgroundColor="{StaticResource EditorBackgroundColor}"
                             Text="{Binding InputText}"
                             PlaceholderColor="{StaticResource LabelTextColor}"
