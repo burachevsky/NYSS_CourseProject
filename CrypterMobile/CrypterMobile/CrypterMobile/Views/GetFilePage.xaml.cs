@@ -10,17 +10,14 @@ using Xamarin.Forms.Xaml;
 namespace CrypterMobile.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class CrypterPage : ContentPage
+    public partial class GetFilePage : ContentPage
     {
-        private readonly CrypterViewModel vm;
-
-        [Android.Runtime.Preserve]
-        public CrypterPage()
+        public GetFilePage()
         {
             InitializeComponent();
-            vm = new CrypterViewModel();
-            BindingContext = vm;
-            Picker_Language.SelectedIndex = 0;
+            BindingContext = new GetFileViewModel();
+            Picker_Extension.SelectedIndex = 0;
+            Entry_FileName.Text = string.Empty;
         }
     }
 }

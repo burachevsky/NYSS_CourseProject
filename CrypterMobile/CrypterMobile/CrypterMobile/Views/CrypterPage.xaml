@@ -22,30 +22,38 @@
             <x:String x:Key="Decrypt">Дешифрование</x:String>
             <x:String x:Key="KeyMustBeValid">Ключ должен содержать хотя бы 1 символ из текущего алфавита</x:String>
             <x:String x:Key="Reverse">Инвертировать</x:String>
+            <x:String x:Key="Save">Сохранить результат</x:String>
+            <x:String x:Key="Open">Открыть файл</x:String>
             <Color x:Key="LabelTextColor">LightSlateGray</Color>
             <Color x:Key="EditorBackgroundColor">AliceBlue</Color>
             <Color x:Key="ErrorTextColor">Red</Color>
         </ResourceDictionary>
     </ContentPage.Resources>
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Order="Secondary" Text="{StaticResource Open}" Command="{Binding OpenCommand}" />
+        <ToolbarItem Order="Secondary" Text="{StaticResource Save}" Command="{Binding SaveCommand}" />
+        <ToolbarItem Order="Secondary" Text="{StaticResource Reverse}" Command="{Binding ReverseCommand}" />
+    </ContentPage.ToolbarItems>
+
     <Grid>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="5*" />
-            <RowDefinition Height="1*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <ScrollView Grid.Row="0">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="0.5*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <StackLayout Grid.Row="0"
+                <StackLayout Grid.Row="1"
                              Orientation="Vertical"
                              Margin="20">
                     <Label x:Name="Label_Input"
@@ -60,7 +68,7 @@
                             TextColor="{StaticResource LabelTextColor}" />
                 </StackLayout>
 
-                <StackLayout Grid.Row="1" Orientation="Vertical" Margin="20">
+                <StackLayout Grid.Row="2" Orientation="Vertical" Margin="20">
                     <Label x:Name="Label_Key"
                            Text="{StaticResource Key}"
                            TextColor="{StaticResource LabelTextColor}" />
@@ -75,7 +83,7 @@
                            IsVisible="{Binding IsKeyNotValid}" />
                 </StackLayout>
 
-                <Grid Grid.Row="2">
+                <Grid Grid.Row="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
@@ -112,17 +120,6 @@
                                 SelectedIndex="{Binding CurrentAlphabetIndex}"
                                 ItemsSource="{Binding Languages}" />
                     </StackLayout>
-                </Grid>
-
-                <Grid Grid.Row="3">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="1" x:Name="Button_Reverse"
-                            Text="{StaticResource Reverse}"
-                            Command="{Binding ReverseCommand}" 
-                            HeightRequest="30" />
                 </Grid>
 
                 <StackLayout Grid.Row="4"

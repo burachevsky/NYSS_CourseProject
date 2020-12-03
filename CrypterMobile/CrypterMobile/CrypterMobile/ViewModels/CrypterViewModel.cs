@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CrypterCore;
 using CrypterMobile.Annotations;
+using CrypterMobile.Services;
 using Xamarin.Forms;
 
 namespace CrypterMobile.ViewModels
@@ -18,14 +19,11 @@ namespace CrypterMobile.ViewModels
         private int currentModeIndex;
         private int currentAlphabetIndex;
         private bool isKeyNotValid;
-        
+
         public string InputText
         {
             get => inputText;
-            set => SetProperty(ref inputText, value, nameof(InputText), () =>
-            {
-                OutputText = string.Empty;
-            });
+            set => SetProperty(ref inputText, value, nameof(InputText), () => { OutputText = string.Empty; });
         }
 
         public string KeyText
@@ -53,7 +51,7 @@ namespace CrypterMobile.ViewModels
         public int CurrentModeIndex
         {
             get => currentModeIndex;
-            set => SetProperty(ref currentModeIndex, value, nameof(CurrentModeIndex), 
+            set => SetProperty(ref currentModeIndex, value, nameof(CurrentModeIndex),
                 () => OutputText = string.Empty);
         }
 
@@ -66,11 +64,16 @@ namespace CrypterMobile.ViewModels
         public ObservableCollection<IAlphabet> Languages { get; set; } = new ObservableCollection<IAlphabet>
             {Alphabets.RUSSIAN, Alphabets.ENGLISH};
 
+
         public VigenereCipher Cipher { get; private set; }
 
         public ICommand RunCommand { get; }
 
         public ICommand ReverseCommand { get; }
+
+        public ICommand OpenCommand { get; }
+
+        public ICommand SaveCommand { get; }
 
         public bool IsEncrypting
         {
@@ -78,16 +81,19 @@ namespace CrypterMobile.ViewModels
             set => CurrentModeIndex = value ? 0 : 1;
         }
 
-        private IAlphabet CurrentAlphabet => CurrentAlphabetIndex >= 0 && CurrentAlphabetIndex < Languages.Count 
-            ? Languages[CurrentAlphabetIndex] 
+        private IAlphabet CurrentAlphabet => CurrentAlphabetIndex >= 0 && CurrentAlphabetIndex < Languages.Count
+            ? Languages[CurrentAlphabetIndex]
             : Languages[0];
+
+        private readonly IFileManager fileManager = DependencyService.Get<IFileManager>();
 
         public CrypterViewModel()
         {
             RunCommand = new Command(Run);
             ReverseCommand = new Command(Reverse);
+            OpenCommand = new Command(OpenAsync);
+            SaveCommand = new Command(SaveAsync);
             IsEncrypting = true;
-            //Cipher = new VigenereCipher(KeyText, CurrentAlphabet);
         }
 
         private void ValidateKey()
@@ -105,7 +111,7 @@ namespace CrypterMobile.ViewModels
 
             try
             {
-                if (Cipher == null ||Cipher.Alphabet != CurrentAlphabet || !Cipher.KeyAsString.Equals(keyText))
+                if (Cipher == null || Cipher.Alphabet != CurrentAlphabet || !Cipher.KeyAsString.Equals(keyText))
                 {
                     Cipher = new VigenereCipher(keyText, CurrentAlphabet);
                 }
@@ -123,6 +129,16 @@ namespace CrypterMobile.ViewModels
             InputText = OutputText;
             IsEncrypting = !IsEncrypting;
             Run();
+        }
+
+        public void OpenAsync()
+        {
+            fileManager.OpenReadFileDialog(text => InputText = text);
+        }
+
+        public void SaveAsync()
+        {
+            fileManager.OpenSaveFileDialog(InputText);
         }
     }
 }

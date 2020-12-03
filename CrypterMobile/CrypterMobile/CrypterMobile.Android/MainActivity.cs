@@ -1,11 +1,15 @@
 ﻿using System;
-
+using Android;
 using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Android.Support.V4.App;
+using CrypterMobile.Droid.Services;
+using CrypterMobile.Services;
+using Xamarin.Forms;
 
 namespace CrypterMobile.Droid
 {
@@ -22,6 +26,20 @@ namespace CrypterMobile.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
+
+            DependencyService.Register<IMessage, MessageAndroid>();
+            DependencyService.Register<IFileManager, FileManagerAndroid>();
+
+
+            if (ActivityCompat.CheckSelfPermission(this, Manifest.Permission.WriteExternalStorage) != Permission.Granted)
+            {
+                ActivityCompat.RequestPermissions(this, new[] { Manifest.Permission.WriteExternalStorage }, 10);
+            }
+
+            if (ActivityCompat.CheckSelfPermission(this, Manifest.Permission.ReadExternalStorage) != Permission.Granted)
+            {
+                ActivityCompat.RequestPermissions(this, new[] { Manifest.Permission.ReadExternalStorage }, 11);
+            }
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CrypterMobile.Views.GetFilePage">
+
+    <ContentPage.Resources>
+        <Color x:Key="TextColor">LightSlateGray</Color>
+        <Color x:Key="EditorBackgroundColor">AliceBlue</Color>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout VerticalOptions="Center"  Spacing="3" Padding="15">
+            <Label TextColor="{StaticResource TextColor}" FontSize="Medium">Сохранение</Label>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Entry Grid.Column="0"
+                        x:Name="Entry_FileName"
+                        BackgroundColor="{StaticResource EditorBackgroundColor}"
+                        Text="{Binding FileName}"
+                        TextColor="{StaticResource TextColor}"/>
+                <Picker Grid.Column="1"
+                        WidthRequest="100"
+                        x:Name="Picker_Extension"
+                        BackgroundColor="{StaticResource EditorBackgroundColor}"
+                        TextColor="{StaticResource TextColor}"
+                        SelectedIndex="{Binding ExtensionIndex}"
+                        ItemsSource="{Binding Extensions}">
+                </Picker>
+            </Grid>
+            <StackLayout Orientation="Horizontal">
+                <Button Text="Отменить" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
+                <Button Text="Сохранить" IsEnabled="{Binding CanSave}"  Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -5,22 +5,32 @@
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <IntermediateOutputPath>$(SolutionDir)\obj\$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
     <UseShortFileNames>True</UseShortFileNames>
+    <UserSecretsId>b0875291-e0c5-48ce-bd85-6d6f46d4e738</UserSecretsId>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Spire.Doc" Version="8.11.15" />
     <PackageReference Include="Xamarin.Forms" Version="4.8.0.1451" />  
-    <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />  
+    <PackageReference Include="Xamarin.Plugin.FilePicker" Version="2.1.41" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="CrypterCore">
       <HintPath>..\..\..\CrypterCore\obj\Release\CrypterCore.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Android">
+      <HintPath>..\CrypterMobile.Android\obj\Debug\90\android\assets\Mono.Android.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   
   <ItemGroup>
     <EmbeddedResource Update="Views\CrypterPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\GetFilePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
