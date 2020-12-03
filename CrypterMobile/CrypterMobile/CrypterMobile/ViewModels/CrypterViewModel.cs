@@ -138,7 +138,7 @@ namespace CrypterMobile.ViewModels
 
         public void SaveAsync()
         {
-            fileManager.OpenSaveFileDialog(InputText);
+            fileManager.OpenSaveFileDialog(OutputText);
         }
     }
 }
