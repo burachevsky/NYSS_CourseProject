@@ -118,7 +118,7 @@ namespace CrypterMobile.ViewModels
 
                 OutputText = IsEncrypting ? Cipher.Encrypt(InputText) : Cipher.Decrypt(InputText);
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
                 //never happens
             }

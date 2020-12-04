@@ -1,14 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CrypterMobile.Views.AboutPage"
              xmlns:vm="clr-namespace:CrypterMobile.ViewModels"
              Title="{Binding Title}">
-    
+
     <ContentPage.BindingContext>
         <vm:AboutViewModel />
     </ContentPage.BindingContext>
-    
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <Color x:Key="Accent">#96d1ff</Color>
@@ -22,17 +23,33 @@
         </Grid.RowDefinitions>
         <StackLayout BackgroundColor="{StaticResource Accent}" VerticalOptions="FillAndExpand" HorizontalOptions="Fill">
             <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
-                <Label TextColor="White" Text="NowYouSeeSharp &lt;3" Font="Bold" FontSize="30" VerticalOptions="EndAndExpand"/>
+                <Button BackgroundColor="{StaticResource Accent}"
+                        TextTransform="None"
+                        Command="{Binding ShowMessageCommand}"
+                        TextColor="White" Text="NowYouSeeSharp &lt;3" Font="Bold"
+                        FontSize="30"
+                        VerticalOptions="EndAndExpand" />
             </StackLayout>
         </StackLayout>
         <ScrollView Grid.Row="1">
-            <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
-                <Button Margin="0,10,0,0" Text="Узнать больше о шифре Виженера"
-                        Command="{Binding OpenWebCommand}"
-                        BackgroundColor="{StaticResource Primary}"
-                        TextColor="White" />
+
+            <StackLayout Orientation="Vertical" VerticalOptions="Center" Padding="30,24,30,24" Spacing="10">
+                <Button Text="Шифр Виженера" 
+                        BackgroundColor="{StaticResource Accent}"
+                        ContentLayout="Left" 
+                        ImageSource="Resources/drawable/icon_wikipedia_32.png" 
+                        Command="{Binding OpenWikipediaCommand}" />
+                <Button Text="Исходный код приложения" 
+                        BackgroundColor="{StaticResource Accent}"
+                        ContentLayout="Left" 
+                        ImageSource="Resources/drawable/icon_github_32.png"
+                        Command="{Binding OpenGithubCommand}" />
+                <Button Text="Связаться с разработчиком" 
+                        BackgroundColor="{StaticResource Accent}"
+                        ContentLayout="Left" 
+                        ImageSource="Resources/drawable/icon_telegram_32.png"
+                        Command="{Binding OpenTelegramCommand}" />
             </StackLayout>
         </ScrollView>
     </Grid>
-
 </ContentPage>

@@ -17,7 +17,7 @@
             <x:String x:Key="OutputText">Результат</x:String>
             <x:String x:Key="Run">Шифровать</x:String>
             <x:String x:Key="Mode">Режим</x:String>
-            <x:String x:Key="Language">Язык</x:String>
+            <x:String x:Key="Language">Алфавит</x:String>
             <x:String x:Key="Encrypt">Шифрование</x:String>
             <x:String x:Key="Decrypt">Дешифрование</x:String>
             <x:String x:Key="KeyMustBeValid">Ключ должен содержать хотя бы 1 символ из текущего алфавита</x:String>
@@ -61,6 +61,7 @@
                            TextColor="{StaticResource LabelTextColor}" />
                     <Editor x:Name="Editor_Input"
                             AutoSize="TextChanges" 
+                            Keyboard="Chat"
                             BackgroundColor="{StaticResource EditorBackgroundColor}"
                             Text="{Binding InputText}"
                             PlaceholderColor="{StaticResource LabelTextColor}"
@@ -71,12 +72,11 @@
                     <Label x:Name="Label_Key"
                            Text="{StaticResource Key}"
                            TextColor="{StaticResource LabelTextColor}" />
-                    <Editor x:Name="Editor_Key"
-                            AutoSize="TextChanges"
-                            BackgroundColor="{StaticResource EditorBackgroundColor}"
+                    <Entry x:Name="Editor_Key"
+                           BackgroundColor="{StaticResource EditorBackgroundColor}"
                             Text="{Binding KeyText}"
                             PlaceholderColor="{StaticResource LabelTextColor}"
-                            TextColor="{StaticResource LabelTextColor}" />
+                            TextColor="{StaticResource LabelTextColor}" /><!-- AutoSize="TextChanges"-->
                     <Label Text="{StaticResource KeyMustBeValid}"
                            TextColor="{StaticResource ErrorTextColor}"
                            IsVisible="{Binding IsKeyNotValid}" />
