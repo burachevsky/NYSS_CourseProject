@@ -3,17 +3,21 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:local="clr-namespace:CrypterDesktop"
-    xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="CrypterDesktop.MainWindow"
+    xmlns:viewModels="clr-namespace:CrypterDesktop.ViewModels"
+    x:Class="CrypterDesktop.Views.MainWindow"
+    x:Name="Window"
     mc:Ignorable="d"
     Padding="20, 0, 20, 0"
-    x:Name="Window_Main"
-    Title="MainWindow" MinHeight="480" MinWidth="800" Height="600" Width="900">
+    Title="Шифр Виженера" MinHeight="480" MinWidth="800" Height="600" Width="900">
 
-    <Window.CommandBindings>
-        <CommandBinding Command="Open" Executed="MenuItem_Open_OnClick"/>
-        <CommandBinding Command="Save" Executed="MenuItem_Save_OnClick"/>
-    </Window.CommandBindings>
+    <!--<Window.CommandBindings>
+        <CommandBinding Command="Open" Executed="MenuItem_Open_OnClick" />
+        <CommandBinding Command="Save" Executed="MenuItem_Save_OnClick" />
+    </Window.CommandBindings>-->
+
+    <Window.DataContext>
+        <viewModels:MainViewModel />
+    </Window.DataContext>
 
     <Grid>
         <Grid Margin="15,26,15,0">
@@ -39,9 +43,11 @@
                        Margin="0,0,0,0" />
                 <TextBox Grid.Row="1"
                          x:Name="TextBox_Input"
+                         Text="{Binding InputText}"
                          FontSize="20"
                          HorizontalAlignment="Center"
                          AcceptsReturn="True"
+                         TextChanged="OnInputTextChanged"
                          AcceptsTab="True"
                          Width="{Binding Path=ActualWidth, ElementName=Grid_Input}"
                          Margin="0,0,0,0"
@@ -68,6 +74,8 @@
                 <TextBox Grid.Row="1" x:Name="TextBox_Output"
                          FontSize="20"
                          MinLines="4"
+                         IsReadOnly="True"
+                         Text="{Binding OutputText}"
                          HorizontalAlignment="Center"
                          Width="{Binding Path=ActualWidth, ElementName=Grid_Output}"
                          Margin="0,0,0,0"
@@ -95,8 +103,10 @@
                              FontSize="20"
                              HorizontalAlignment="Left"
                              Height="34"
+                             BorderBrush="{Binding KeyTextBorderBrush}"
                              TextWrapping="Wrap"
-                             Text="Скорпион"
+                             TextChanged="OnKeyTextChanged"
+                             Text="{Binding KeyText}"
                              VerticalContentAlignment="Center"
                              Padding="0, 0, 0, 0"
                              VerticalAlignment="Top"
@@ -105,18 +115,20 @@
                 </StackPanel>
 
                 <WrapPanel Grid.Column="1"
-                            Margin="0, 10, 0, 0"
-                            HorizontalAlignment="Center">
+                           Margin="0, 10, 0, 0"
+                           HorizontalAlignment="Center">
                     <RadioButton x:Name="RadioButton_Encrypt"
                                  Content="Зашифровать"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Top"
                                  Height="22"
+                                 IsChecked="{Binding IsEncrypting}"
                                  FontSize="20"
                                  Margin="0,0,10,0" />
                     <RadioButton x:Name="RadioButton_Decrypt"
                                  FontSize="20"
-                                 Content="Расшифровать"
+                                 IsChecked="{Binding IsDecrypting}"
+                                 Content="Дешифровать"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Top"
                                  Height="22"
@@ -124,13 +136,14 @@
                     <CheckBox x:Name="CheckBox_JitCiphering"
                               FontSize="20"
                               Content="Шифрование на ходу"
+                              IsChecked="{Binding IsJitCiphering}"
                               HorizontalAlignment="Left"
                               Margin="0,10,0,0"
                               VerticalAlignment="Center" />
                 </WrapPanel>
 
                 <StackPanel x:Name="StackPanel_Language" Grid.Column="2">
-                    <Label Content="Язык"
+                    <Label Content="Алфавит"
                            Padding="0, 0, 0, 0"
                            FontSize="16"
                            Width="{Binding ElementName=ComboBox_Language, Path=ActualWidth}"
@@ -142,41 +155,45 @@
                               FontSize="20"
                               HorizontalAlignment="Right"
                               VerticalAlignment="Top"
+                              ItemsSource="{Binding Alphabets}"
+                              SelectedIndex="{Binding AlphabetIndex}"
                               Margin="0,0,0,0" />
                     <Button x:Name="Button_Run"
-                            Click="Button_Run_OnClick"
+                            Command="{Binding RunCommand}"
                             FontSize="16"
+                            Visibility="{Binding RunButtonVisibility}"
                             Content="Выполнить шифрование"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
                             Height="28"
                             Margin="0,10,0,0" />
                 </StackPanel>
-
-
             </Grid>
         </Grid>
 
         <Menu HorizontalAlignment="Left" Height="21" VerticalAlignment="Top" Width="794" Margin="0,0,-0.4,0">
             <MenuItem Header="Файл">
-                <MenuItem x:Name="MenuItem_Open" 
-                          Header="Открыть" 
-                          Click="MenuItem_Open_OnClick"
-                          InputGestureText="Ctrl+O"/>
-                <MenuItem x:Name="MenuItem_Save" 
-                          Header="Сохранить" 
-                          Click="MenuItem_Save_OnClick"
-                          InputGestureText="Ctrl+S"/>
-                <Separator></Separator>
-                <MenuItem x:Name="MenuItem_Exit" 
-                          Header="Выход" 
-                          Click="MenuItem_Exit_OnClick"
-                          InputGestureText="Alt+F4"/>
+                <MenuItem x:Name="MenuItem_Open"
+                          Header="Открыть"
+                          Command="{Binding OpenCommand}"
+                          InputGestureText="Ctrl+O" />
+                <MenuItem x:Name="MenuItem_Save"
+                          Header="Сохранить"
+                          Command="{Binding SaveCommand}"
+                          InputGestureText="Ctrl+S" />
+                <Separator />
+                <MenuItem x:Name="MenuItem_Exit"
+                          Header="Выход"
+                          Command="{Binding ExitCommand}"
+                          InputGestureText="Alt+F4" />
 
             </MenuItem>
-            <MenuItem Header="О программе"/>
+            <MenuItem Header="Вид">
+                <MenuItem Header="Инвертировать"
+                          Command="{Binding ReverseCommand}"
+                          InputGestureText="Ctrl+I"/>
+            </MenuItem>
+            <MenuItem Header="О программе" />
         </Menu>
-
-
     </Grid>
 </Window>

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CrypterDesktop.Properties
+namespace CrypterDesktop.ViewModels.Services.Properties
 {
 
 
