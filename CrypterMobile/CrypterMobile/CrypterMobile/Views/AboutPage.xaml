@@ -44,7 +44,7 @@
                         ContentLayout="Left" 
                         ImageSource="Resources/drawable/icon_github_32.png"
                         Command="{Binding OpenGithubCommand}" />
-                <Button Text="Связаться с разработчиком" 
+                <Button Text="Связь с разработчиком" 
                         BackgroundColor="{StaticResource Accent}"
                         ContentLayout="Left" 
                         ImageSource="Resources/drawable/icon_telegram_32.png"

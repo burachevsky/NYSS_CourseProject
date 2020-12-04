@@ -49,7 +49,7 @@ namespace CrypterMobile.Droid.Services
                         File.WriteAllText(path, text);
                     }
 
-                    Alert.LongAlert($"Файл сохранен {path}");
+                    Alert.LongAlert($"Файл сохранен по адресу: {path}");
                     OnSuccess?.Invoke();
                 }
                 catch (Exception ex)

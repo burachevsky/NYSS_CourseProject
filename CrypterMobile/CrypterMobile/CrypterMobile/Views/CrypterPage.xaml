@@ -60,7 +60,7 @@
                            Text="{StaticResource InputText}"
                            TextColor="{StaticResource LabelTextColor}" />
                     <Editor x:Name="Editor_Input"
-                            AutoSize="TextChanges" 
+                            AutoSize="TextChanges"
                             Keyboard="Chat"
                             BackgroundColor="{StaticResource EditorBackgroundColor}"
                             Text="{Binding InputText}"
@@ -72,11 +72,30 @@
                     <Label x:Name="Label_Key"
                            Text="{StaticResource Key}"
                            TextColor="{StaticResource LabelTextColor}" />
-                    <Entry x:Name="Editor_Key"
-                           BackgroundColor="{StaticResource EditorBackgroundColor}"
-                            Text="{Binding KeyText}"
-                            PlaceholderColor="{StaticResource LabelTextColor}"
-                            TextColor="{StaticResource LabelTextColor}" /><!-- AutoSize="TextChanges"-->
+                    <Grid BackgroundColor="{StaticResource EditorBackgroundColor}" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Entry Grid.Column="0" 
+                               x:Name="Editor_Key"
+                               IsPassword="{Binding IsKeyPassword}"
+                               BackgroundColor="{StaticResource EditorBackgroundColor}"
+                               Text="{Binding KeyText}"
+                               PlaceholderColor="{StaticResource LabelTextColor}"
+                               TextColor="{StaticResource LabelTextColor}" />
+                        <Image Grid.Column="1" 
+                               BackgroundColor="{StaticResource EditorBackgroundColor}"  
+                               Source="{Binding EyeImageSource}"
+                               Margin="0, 0, 5,0">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ShowKeyCommand}" 
+                                                      NumberOfTapsRequired="1" />
+                            </Image.GestureRecognizers> 
+                        </Image>
+                        
+                    </Grid>
+                    
                     <Label Text="{StaticResource KeyMustBeValid}"
                            TextColor="{StaticResource ErrorTextColor}"
                            IsVisible="{Binding IsKeyNotValid}" />

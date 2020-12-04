@@ -19,6 +19,8 @@ namespace CrypterMobile.ViewModels
         private int currentModeIndex;
         private int currentAlphabetIndex;
         private bool isKeyNotValid;
+        private bool isKeyPassword;
+        private string eyeImageSource;
 
         public string InputText
         {
@@ -61,6 +63,29 @@ namespace CrypterMobile.ViewModels
             set => SetProperty(ref currentAlphabetIndex, value, nameof(CurrentAlphabetIndex), ValidateKey);
         }
 
+        public bool IsKeyPassword
+        {
+            get => isKeyPassword;
+            set => SetProperty(ref isKeyPassword, value, nameof(IsKeyPassword), () =>
+            {
+                if (IsKeyPassword)
+                {
+                    EyeImageSource = "Resources/drawable/icon_eye_24.png";
+                }
+                else
+                {
+                    EyeImageSource = "Resources/drawable/icon_thirdeye_24.png";
+                    Alert.ShortAlert("Third eye is watching you -_-");
+                }
+            });
+        }
+
+        public string EyeImageSource
+        {
+            get => eyeImageSource;
+            set => SetProperty(ref eyeImageSource, value, nameof(EyeImageSource));
+        }
+
         public ObservableCollection<IAlphabet> Languages { get; set; } = new ObservableCollection<IAlphabet>
             {Alphabets.RUSSIAN, Alphabets.ENGLISH};
 
@@ -68,12 +93,10 @@ namespace CrypterMobile.ViewModels
         public VigenereCipher Cipher { get; private set; }
 
         public ICommand RunCommand { get; }
-
         public ICommand ReverseCommand { get; }
-
         public ICommand OpenCommand { get; }
-
         public ICommand SaveCommand { get; }
+        public ICommand ShowKeyCommand { get; }
 
         public bool IsEncrypting
         {
@@ -93,7 +116,9 @@ namespace CrypterMobile.ViewModels
             ReverseCommand = new Command(Reverse);
             OpenCommand = new Command(OpenAsync);
             SaveCommand = new Command(SaveAsync);
+            ShowKeyCommand = new Command(ShowKey);
             IsEncrypting = true;
+            IsKeyPassword = true;
         }
 
         private void ValidateKey()
@@ -126,6 +151,10 @@ namespace CrypterMobile.ViewModels
 
         private void Reverse()
         {
+            if (OutputText.Equals(string.Empty))
+            {
+                Run();
+            }
             InputText = OutputText;
             IsEncrypting = !IsEncrypting;
             Run();
@@ -139,6 +168,11 @@ namespace CrypterMobile.ViewModels
         public void SaveAsync()
         {
             fileManager.OpenSaveFileDialog(OutputText);
+        }
+
+        public void ShowKey()
+        {
+            IsKeyPassword = !IsKeyPassword;
         }
     }
 }
