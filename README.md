@@ -1,5 +1,5 @@
 # NYSS_CourseProject
-## Crypter: The Vigenère cipher implementation for windows, android and ios
+## Crypter: The Vigenère cipher implementation for windows and mobile
 Автоматический шифратор и дешифратор информации с помощью алгоритма Виженера.
 ### Основные особенности приложения
 * Шифрование и дешифрование сообщения с возможностью указать ключ
