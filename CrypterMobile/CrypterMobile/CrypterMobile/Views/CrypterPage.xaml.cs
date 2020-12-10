@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using CrypterMobile.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using XLabs.Forms.Behaviors;
+using XLabs.Forms.Controls;
 
 namespace CrypterMobile.Views
 {

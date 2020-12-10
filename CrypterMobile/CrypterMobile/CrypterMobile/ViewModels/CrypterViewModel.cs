@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using CrypterCore;
-using CrypterMobile.Annotations;
+﻿using CrypterCore;
 using CrypterMobile.Services;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace CrypterMobile.ViewModels
@@ -75,10 +72,14 @@ namespace CrypterMobile.ViewModels
                 else
                 {
                     EyeImageSource = "Resources/drawable/icon_thirdeye_24.png";
-                    Alert.ShortAlert("Third eye is watching you -_-");
+                    if (++secret % 3 == 0)
+                    {
+                        Alert.ShortAlert("The Third eye is watching -_-");
+                    }
                 }
             });
         }
+        private int secret = 0;
 
         public string EyeImageSource
         {
@@ -143,9 +144,9 @@ namespace CrypterMobile.ViewModels
 
                 OutputText = IsEncrypting ? Cipher.Encrypt(InputText) : Cipher.Decrypt(InputText);
             }
-            catch (ArgumentException)
+            catch (ArgumentException e)
             {
-                //never happens
+                Console.WriteLine(e.StackTrace);//never happens
             }
         }
 

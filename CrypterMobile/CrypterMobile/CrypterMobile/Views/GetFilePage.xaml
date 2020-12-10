@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:CrypterMobile.ViewModels;assembly=CrypterMobile"
              x:Class="CrypterMobile.Views.GetFilePage"
-             Title="Сохранение">
+             Title="{Binding Title}">
 
     <ContentPage.Resources>
         <Color x:Key="TextColor">LightSlateGray</Color>
@@ -16,36 +16,85 @@
     </ContentPage.BindingContext>
 
     <ContentPage.Content>
-        <StackLayout VerticalOptions="Center" Spacing="3" Padding="15">
-            <Label TextColor="{StaticResource TextColor}">Имя файла</Label>
-            <Grid>
+        <Grid Padding="15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <StackLayout HeightRequest="32" Grid.Row="0" Orientation="Horizontal">
+                <Button ImageSource="Resources/drawable/icon_prev_24.png" 
+                        WidthRequest="32" BackgroundColor="White"
+                        Command="{Binding PrevDirCommand}"/>
+                <ScrollView Orientation="Horizontal">
+                    <Label HeightRequest="32" 
+                           VerticalTextAlignment="Center" 
+                           HorizontalTextAlignment="Start" 
+                            LineBreakMode="NoWrap"
+                           TextColor="{StaticResource TextColor}" 
+                           Text="{Binding DirectoryPath}" 
+                           FontSize="Micro" />
+                </ScrollView>
+                
+            </StackLayout>
+
+            <ListView Grid.Row="1"
+                      RefreshControlColor="{StaticResource Primary}"
+                      ItemsSource="{Binding DirectoryItems}" 
+                      ItemTapped="ListView_OnItemTapped"
+                      Margin="0"
+                      SeparatorColor="DeepSkyBlue"
+                      RefreshAllowed="True"
+                      RefreshCommand="{Binding RefreshCommand}"
+                      SelectionMode="None">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal" Padding="0" Margin="0">
+                                <Image 
+                                       Source="{Binding ImageSource}"
+                                       Aspect="AspectFit"
+                                       Margin="10, 0, 15, 0"/>
+                                <Label
+                                        Padding="0"
+                                        Margin="0"
+                                       Text="{Binding Name}"
+                                       TextColor="LightSlateGray"
+                                       FontSize="Medium"
+                                        VerticalTextAlignment="Center"
+                                       HorizontalTextAlignment="Start"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Grid Grid.Row="2" IsVisible="{Binding IsFileNameFieldVisible}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Entry Grid.Column="0"
                        x:Name="Entry_FileName"
+                       FontSize="Micro"
                        BackgroundColor="{StaticResource EditorBackgroundColor}"
                        Text="{Binding FileName}"
                        TextColor="{StaticResource TextColor}" />
                 <Picker Grid.Column="1"
-                        WidthRequest="100"
+                        Title="Выбор расширения"
+                        FontSize="Micro"
                         x:Name="Picker_Extension"
                         BackgroundColor="{StaticResource EditorBackgroundColor}"
                         TextColor="{StaticResource TextColor}"
+                        WidthRequest="60"
                         SelectedIndex="{Binding ExtensionIndex}"
                         ItemsSource="{Binding Extensions}" />
-            </Grid>
-            <StackLayout Orientation="Horizontal" Margin="0, 20, 0, 0">
-                <Button Text="Сохранить" 
+                <Button Grid.Column="2"  Text="{Binding OkButtonText}" FontSize="Micro"
                         IsEnabled="{Binding CanSave}" 
-                        Command="{Binding SaveCommand}"
+                        Command="{Binding OkCommand}"
                         HorizontalOptions="FillAndExpand" />
-                <Button Text="Отменить" 
-                        Command="{Binding CancelCommand}" 
-                        HorizontalOptions="FillAndExpand" />
-
-            </StackLayout>
-        </StackLayout>
+            </Grid>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

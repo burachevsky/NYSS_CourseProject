@@ -22,8 +22,8 @@
             <x:String x:Key="Decrypt">Дешифрование</x:String>
             <x:String x:Key="KeyMustBeValid">Ключ должен содержать хотя бы 1 символ из текущего алфавита</x:String>
             <x:String x:Key="Reverse">Инвертировать</x:String>
-            <x:String x:Key="Save">Сохранить результат</x:String>
-            <x:String x:Key="Open">Открыть файл</x:String>
+            <x:String x:Key="Save">Сохранить как</x:String>
+            <x:String x:Key="Open">Открыть</x:String>
             <Color x:Key="LabelTextColor">LightSlateGray</Color>
             <Color x:Key="EditorBackgroundColor">AliceBlue</Color>
             <Color x:Key="ErrorTextColor">Red</Color>
@@ -116,6 +116,7 @@
                             TextColor="{StaticResource LabelTextColor}" />
                         <Picker
                             x:Name="Picker_Mode"
+                            Title="Выбор режима шифрования"
                             TextColor="{StaticResource LabelTextColor}"
                             SelectedIndex="{Binding CurrentModeIndex}"
                             FontSize="18">
@@ -133,6 +134,7 @@
                                Text="{StaticResource Language}"
                                TextColor="{StaticResource LabelTextColor}" />
                         <Picker x:Name="Picker_Language"
+                                Title="Выбор языка шифрования"
                                 FontSize="18"
                                 TextColor="{StaticResource LabelTextColor}"
                                 SelectedIndex="{Binding CurrentAlphabetIndex}"

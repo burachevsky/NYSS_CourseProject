@@ -1,18 +1,14 @@
-﻿using System;
-using System.IO;
-using CrypterMobile.Services;
-using System.Text;
-using Android;
-using Android.App;
-using Android.Content.PM;
-using Android.Support.Design.Widget;
-using Android.Support.V4.App;
-using Android.Widget;
+﻿using CrypterMobile.Services;
 using CrypterMobile.Views;
 using Plugin.FilePicker;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CrypterMobile.ViewModels;
 using Xamarin.Forms;
-using Xamarin.Forms.Platform.Android;
-using Toast = Android.Widget.Toast;
 
 namespace CrypterMobile.Droid.Services
 {
@@ -31,25 +27,17 @@ namespace CrypterMobile.Droid.Services
 
                 try
                 {
-                    var dir = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "crypter");
-
-                    if (!Directory.Exists(dir))
-                    {
-                        Directory.CreateDirectory(dir);
-                    }
-
-                    var path = Path.Combine(dir, fileName);
 
                     if (fileName.EndsWith(".docx"))
                     {
-                        File.WriteAllBytes(path, Formats.ConvertToDocx(text));
+                        File.WriteAllBytes(fileName, Formats.ConvertToDocx(text));
                     }
                     else if (fileName.EndsWith(".txt"))
                     {
-                        File.WriteAllText(path, text);
+                        File.WriteAllText(fileName, text);
                     }
 
-                    Alert.LongAlert($"Файл сохранен по адресу: {path}");
+                    Alert.LongAlert($"Файл сохранен по адресу: {fileName}");
                     OnSuccess?.Invoke();
                 }
                 catch (Exception ex)
@@ -59,29 +47,31 @@ namespace CrypterMobile.Droid.Services
                 }
             };
 
-            await Shell.Current.GoToAsync(nameof(GetFilePage));
+            var filePicker = Shell.Current.GoToAsync(nameof(GetFilePage));
+
+            GetFileViewModel.Current.ApplyMode(GetFileViewModel.GetFileMode.SaveAs);
+
+            await filePicker;
         }
 
         public async void OpenReadFileDialog(Action<string> OnSuccess = null)
         {
-            try
+            OnFileNameChoosed = file =>
             {
-                using (var fileData = await CrossFilePicker.Current.PickFile(new[] { ".txt", ".docx" }))
+                try
                 {
-                    if (fileData == null)
+                    if (file == null)
                         return;
-
-                    var fileName = fileData.FileName;
 
                     string contents = null;
 
-                    if (fileName.EndsWith(".docx"))
+                    if (file.EndsWith(".docx"))
                     {
-                        contents = Formats.GetTextFromDocx(fileData.DataArray);
+                        contents = Formats.GetTextFromDocx(File.ReadAllBytes(file));
                     }
-                    else if (fileName.EndsWith(".txt"))
+                    else if (file.EndsWith(".txt"))
                     {
-                        contents = Encoding.UTF8.GetString(fileData.DataArray);
+                        contents = File.ReadAllText(file);
                     }
 
                     if (contents != null)
@@ -89,14 +79,53 @@ namespace CrypterMobile.Droid.Services
                         OnSuccess?.Invoke(contents);
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Exception choosing file: " + ex);
-                Alert.LongAlert(ex.Message);
-            }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception choosing file: " + e.StackTrace);
+                    Alert.LongAlert(e.Message);
+                }
+            };
+
+            var filePicker = Shell.Current.GoToAsync(nameof(GetFilePage));
+
+            GetFileViewModel.Current.ApplyMode(GetFileViewModel.GetFileMode.Open);
+
+            await filePicker;
         }
 
+        public async Task<(string, List<DirectoryListItem>)> GetStartDirectory()
+        {
+            return await GetDirectory(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath);
+        }
 
+        public async Task<(string, List<DirectoryListItem>)> GetDirectory(string dir)
+        {
+            if (!dir.EndsWith('/'))
+            {
+                dir += '/';
+            }
+
+            return (dir, await GetItemsInDirectory(dir));
+        }
+
+        public bool IsRoot(string dir)
+        {
+            if (dir.EndsWith('/'))
+            {
+                dir = dir.Substring(0, dir.Length - 1);
+            }
+
+            return Android.OS.Environment.ExternalStorageDirectory.AbsolutePath.Equals(dir);
+        }
+
+        public async Task<List<DirectoryListItem>> GetItemsInDirectory(string path)
+        {
+            return Directory.EnumerateFiles(path)
+                .Select(s => new DirectoryListItem(s.Substring(s.LastIndexOf('/') + 1), false))
+                .Concat
+                (
+                    Directory.EnumerateDirectories(path).Select(s => new DirectoryListItem(s.Substring(s.LastIndexOf('/') + 1), true)
+                )).ToList();
+        }
     }
 }
