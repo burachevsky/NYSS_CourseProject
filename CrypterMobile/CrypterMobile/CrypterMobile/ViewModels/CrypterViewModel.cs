@@ -4,6 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace CrypterMobile.ViewModels
@@ -18,6 +19,8 @@ namespace CrypterMobile.ViewModels
         private bool isKeyNotValid;
         private bool isKeyPassword;
         private string eyeImageSource;
+        private bool isCopyButtonVisible;
+        private bool isOutputReady;
 
         public string InputText
         {
@@ -38,7 +41,10 @@ namespace CrypterMobile.ViewModels
         public string OutputText
         {
             get => outputText;
-            set => SetProperty(ref outputText, value, nameof(OutputText));
+            set => SetProperty(ref outputText, value, nameof(OutputText), () =>
+            {
+                IsOutputReady = !outputText.Equals(string.Empty);
+            });
         }
 
         public bool IsKeyNotValid
@@ -87,6 +93,18 @@ namespace CrypterMobile.ViewModels
             set => SetProperty(ref eyeImageSource, value, nameof(EyeImageSource));
         }
 
+        public bool IsCopyButtonVisible
+        {
+            get => isCopyButtonVisible;
+            set => SetProperty(ref isCopyButtonVisible, value, nameof(IsCopyButtonVisible));
+        }
+
+        public bool IsOutputReady
+        {
+            get => isOutputReady;
+            set => SetProperty(ref isOutputReady, value, nameof(IsOutputReady));
+        }
+
         public ObservableCollection<IAlphabet> Languages { get; set; } = new ObservableCollection<IAlphabet>
             {Alphabets.RUSSIAN, Alphabets.ENGLISH};
 
@@ -98,6 +116,8 @@ namespace CrypterMobile.ViewModels
         public ICommand OpenCommand { get; }
         public ICommand SaveCommand { get; }
         public ICommand ShowKeyCommand { get; }
+        public ICommand CopyResultCommand { get; }
+        public ICommand ShareResultCommand { get; }
 
         public bool IsEncrypting
         {
@@ -118,6 +138,9 @@ namespace CrypterMobile.ViewModels
             OpenCommand = new Command(OpenAsync);
             SaveCommand = new Command(SaveAsync);
             ShowKeyCommand = new Command(ShowKey);
+            CopyResultCommand = new Command(CopyResult);
+            ShareResultCommand = new Command(ShareResult);
+
             IsEncrypting = true;
             IsKeyPassword = true;
         }
@@ -143,6 +166,7 @@ namespace CrypterMobile.ViewModels
                 }
 
                 OutputText = IsEncrypting ? Cipher.Encrypt(InputText) : Cipher.Decrypt(InputText);
+                IsOutputReady = true;
             }
             catch (ArgumentException e)
             {
@@ -174,6 +198,18 @@ namespace CrypterMobile.ViewModels
         public void ShowKey()
         {
             IsKeyPassword = !IsKeyPassword;
+        }
+
+        public async void CopyResult()
+        {
+            await Clipboard.SetTextAsync(OutputText);
+            IsCopyButtonVisible = false;
+            Alert.LongAlert("Скопировано!");
+        }
+
+        public async void ShareResult()
+        {
+            await Share.RequestAsync(new ShareTextRequest(OutputText));
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CrypterMobile.Services;
 using CrypterMobile.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -18,6 +19,7 @@ namespace CrypterMobile.Views
         {
             InitializeComponent();
             viewModel = new GetFileViewModel();
+            viewModel.Page = this;
             BindingContext = viewModel;
             Picker_Extension.SelectedIndex = 0;
             Entry_FileName.Text = string.Empty;

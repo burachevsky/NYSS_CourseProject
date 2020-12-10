@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CrypterMobile.Services;
 using CrypterMobile.ViewModels;
+using System.Threading;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using XLabs.Forms.Behaviors;
-using XLabs.Forms.Controls;
 
 namespace CrypterMobile.Views
 {
@@ -23,6 +20,7 @@ namespace CrypterMobile.Views
             vm = new CrypterViewModel();
             BindingContext = vm;
             Picker_Language.SelectedIndex = 0;
+            vm.IsCopyButtonVisible = false;
         }
     }
 }

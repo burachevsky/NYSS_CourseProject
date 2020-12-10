@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using CrypterMobile.Views;
 using Xamarin.Forms;
 
 namespace CrypterMobile.ViewModels
@@ -16,7 +17,7 @@ namespace CrypterMobile.ViewModels
         private string directoryPath;
         private int selectedItemIndex;
         private string okButtonText;
-        private bool isFileNameFieldVisible;
+        private bool isSaveAsMode;
 
         public GetFileMode Mode { get; private set; }
         
@@ -96,16 +97,19 @@ namespace CrypterMobile.ViewModels
             set => SetProperty(ref okButtonText, value, nameof(OkButtonText));
         }
 
-        public bool IsFileNameFieldVisible
+        public bool IsSaveAsMode
         {
-            get => isFileNameFieldVisible;
-            set => SetProperty(ref isFileNameFieldVisible, value, nameof(IsFileNameFieldVisible));
+            get => isSaveAsMode;
+            set => SetProperty(ref isSaveAsMode, value, nameof(IsSaveAsMode));
         }
 
         public ICommand OkCommand { get; }
         public ICommand CancelCommand { get; }
         public ICommand RefreshCommand { get; }
         public ICommand PrevDirCommand { get; }
+        public ICommand CreateFolderCommand { get; }
+
+        public GetFilePage Page { get; set; }
 
         public GetFileViewModel()
         {
@@ -114,6 +118,7 @@ namespace CrypterMobile.ViewModels
             CancelCommand = new Command(OnCancel);
             RefreshCommand = new Command(OnRefresh);
             PrevDirCommand = new Command(OnPrevDir);
+            CreateFolderCommand = new Command(CreateFolder);
             ExtensionIndex = 0;
             FileName = string.Empty;
             CanSave = false;
@@ -162,6 +167,20 @@ namespace CrypterMobile.ViewModels
             DependencyService.Get<IFileManager>().FileNameChoosed(null);
         }
 
+        public async void CreateFolder()
+        {
+            string folderName = await Page.DisplayPromptAsync("Создание папки", "Введите название", "Создать", "Отменить");
+
+            if (folderName == null)
+            {
+                return;
+            }
+            
+            DependencyService.Get<IFileManager>().CreateFolder(DirectoryPath + folderName);
+
+            OnRefresh();
+        }
+
         public void ApplyMode(GetFileMode mode)
         {
             Mode = mode;
@@ -171,13 +190,12 @@ namespace CrypterMobile.ViewModels
                 case GetFileMode.SaveAs:
                     Title = "Сохранить как";
                     OkButtonText = "Сохранить";
-                    IsFileNameFieldVisible = true;
+                    IsSaveAsMode = true;
                     break;
 
                 case GetFileMode.Open:
                     Title = "Открыть";
-                    OkButtonText = "Открыть";
-                    IsFileNameFieldVisible = false;
+                    IsSaveAsMode = false;
                     break;
             }
         }

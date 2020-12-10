@@ -12,8 +12,15 @@
     </ContentPage.Resources>
 
     <ContentPage.BindingContext>
-        <viewModels:GetFileViewModel />
+        <viewModels:GetFileViewModel/>
     </ContentPage.BindingContext>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Order="Secondary" 
+                     Text="Создать папку" 
+                     Command="{Binding CreateFolderCommand}" />
+    </ContentPage.ToolbarItems>
+
 
     <ContentPage.Content>
         <Grid Padding="15">
@@ -36,40 +43,39 @@
                            Text="{Binding DirectoryPath}" 
                            FontSize="Micro" />
                 </ScrollView>
-                
-            </StackLayout>
 
-            <ListView Grid.Row="1"
-                      RefreshControlColor="{StaticResource Primary}"
-                      ItemsSource="{Binding DirectoryItems}" 
-                      ItemTapped="ListView_OnItemTapped"
-                      Margin="0"
-                      SeparatorColor="DeepSkyBlue"
-                      RefreshAllowed="True"
-                      RefreshCommand="{Binding RefreshCommand}"
-                      SelectionMode="None">
+            </StackLayout>
+            <ListView   Grid.Row="1"
+                        RefreshControlColor="{StaticResource Primary}"
+                        ItemsSource="{Binding DirectoryItems}" 
+                        ItemTapped="ListView_OnItemTapped"
+                        Margin="0"
+                        SeparatorColor="DeepSkyBlue"
+                        RefreshAllowed="True"
+                        RefreshCommand="{Binding RefreshCommand}"
+                        SelectionMode="None">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout Orientation="Horizontal" Padding="0" Margin="0">
+                            <StackLayout Orientation="Horizontal" Padding="0" Margin="0" HeightRequest="48">
                                 <Image 
-                                       Source="{Binding ImageSource}"
-                                       Aspect="AspectFit"
-                                       Margin="10, 0, 15, 0"/>
+                                        Source="{Binding ImageSource}"
+                                        Aspect="AspectFit"
+                                        Margin="5, 10, 15, 5"/>
                                 <Label
                                         Padding="0"
                                         Margin="0"
-                                       Text="{Binding Name}"
-                                       TextColor="LightSlateGray"
-                                       FontSize="Medium"
+                                        Text="{Binding Name}"
+                                        TextColor="LightSlateGray"
+                                        FontSize="Small"
                                         VerticalTextAlignment="Center"
-                                       HorizontalTextAlignment="Start"/>
+                                        HorizontalTextAlignment="Start"/>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Grid Grid.Row="2" IsVisible="{Binding IsFileNameFieldVisible}">
+            <Grid Grid.Row="2" IsVisible="{Binding IsSaveAsMode}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -90,7 +96,8 @@
                         WidthRequest="60"
                         SelectedIndex="{Binding ExtensionIndex}"
                         ItemsSource="{Binding Extensions}" />
-                <Button Grid.Column="2"  Text="{Binding OkButtonText}" FontSize="Micro"
+                <Button Grid.Column="2"  Text="{Binding OkButtonText}" 
+                        FontSize="Micro"
                         IsEnabled="{Binding CanSave}" 
                         Command="{Binding OkCommand}"
                         HorizontalOptions="FillAndExpand" />

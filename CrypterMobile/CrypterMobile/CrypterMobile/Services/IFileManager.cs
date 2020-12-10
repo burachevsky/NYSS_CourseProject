@@ -20,5 +20,7 @@ namespace CrypterMobile.Services
         public Task<(string, List<DirectoryListItem>)> GetDirectory(string dir);
 
         public bool IsRoot(string dir);
+
+        public void CreateFolder(string path);
     }
 }

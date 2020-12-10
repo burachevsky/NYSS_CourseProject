@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:CrypterMobile.ViewModels;assembly=CrypterMobile"
              x:Class="CrypterMobile.Views.CrypterPage"
+             x:Name="ContentPage"
              Title="Шифр Виженера">
 
     <ContentPage.BindingContext>
@@ -23,7 +24,7 @@
             <x:String x:Key="KeyMustBeValid">Ключ должен содержать хотя бы 1 символ из текущего алфавита</x:String>
             <x:String x:Key="Reverse">Инвертировать</x:String>
             <x:String x:Key="Save">Сохранить как</x:String>
-            <x:String x:Key="Open">Открыть</x:String>
+            <x:String x:Key="Open">Открыть файл</x:String>
             <Color x:Key="LabelTextColor">LightSlateGray</Color>
             <Color x:Key="EditorBackgroundColor">AliceBlue</Color>
             <Color x:Key="ErrorTextColor">Red</Color>
@@ -55,7 +56,7 @@
 
                 <StackLayout Grid.Row="1"
                              Orientation="Vertical"
-                             Margin="20">
+                             Margin="20, 10, 20, 20">
                     <Label x:Name="Label_Input"
                            Text="{StaticResource InputText}"
                            TextColor="{StaticResource LabelTextColor}" />
@@ -91,11 +92,11 @@
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding ShowKeyCommand}" 
                                                       NumberOfTapsRequired="1" />
-                            </Image.GestureRecognizers> 
+                            </Image.GestureRecognizers>
                         </Image>
-                        
+
                     </Grid>
-                    
+
                     <Label Text="{StaticResource KeyMustBeValid}"
                            TextColor="{StaticResource ErrorTextColor}"
                            IsVisible="{Binding IsKeyNotValid}" />
@@ -144,17 +145,39 @@
 
                 <StackLayout Grid.Row="4"
                              Orientation="Vertical"
-                             Margin="20">
+                             Margin="20"
+                             IsVisible="{Binding IsOutputReady}">
                     <Label x:Name="Label_Output"
                            Text="{StaticResource OutputText}"
-                           TextColor="{StaticResource LabelTextColor}" />
-                    <Editor x:Name="Editor_Output"
-                            AutoSize="TextChanges"
-                            Text="{Binding OutputText}"
-                            PlaceholderColor="{StaticResource LabelTextColor}"
-                            IsReadOnly="True"
-                            BackgroundColor="{StaticResource EditorBackgroundColor}"
-                            TextColor="{StaticResource LabelTextColor}" />
+                           TextColor="{StaticResource LabelTextColor}" >
+
+                    </Label>
+                    <Label x:Name="Editor_Output"
+                           Text="{Binding OutputText}"
+                           Padding="10"
+                           BackgroundColor="{StaticResource EditorBackgroundColor}"
+                           TextColor="{StaticResource LabelTextColor}" 
+                           FontSize="18">
+                    </Label>
+                    <StackLayout Orientation="Horizontal" FlowDirection="RightToLeft" Spacing="4" HeightRequest="36">
+                        <ImageButton Command="{Binding ShareResultCommand}"
+                                     Source="Resources/drawable/icon_share_96.png"
+                                     BackgroundColor="White"
+                                     Aspect="AspectFit"/>
+                        <ImageButton Command="{Binding CopyResultCommand}"
+                                     Source="Resources/drawable/icon_copy_96.png"
+                                     BackgroundColor="White"
+                                     Aspect="AspectFit"/>
+                        <ImageButton Source="Resources/drawable/icon_saveas_96.png"
+                                     Command="{Binding SaveCommand}"
+                                     BackgroundColor="White"
+                                     Aspect="AspectFit"/>
+                        <ImageButton Source="Resources/drawable/icon_reverse_96.png"
+                                     Command="{Binding ReverseCommand}"
+                                     BackgroundColor="White"
+                                     Aspect="AspectFit"/>
+                    </StackLayout>
+
                 </StackLayout>
             </Grid>
         </ScrollView>

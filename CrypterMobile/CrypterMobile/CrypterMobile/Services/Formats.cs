@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Text;
 using Spire.Doc;
 
 namespace CrypterMobile.Services
@@ -27,49 +25,47 @@ namespace CrypterMobile.Services
 
         public static byte[] ConvertToDocx(string text)
         {
-            using (var doc = new Document())
+            using var doc = new Document();
+            var tmpFile = Path.Combine
+            (
+                Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                "tmp.docx"
+            );
+
+            var section = doc.AddSection();
+            var paragraph = section.AddParagraph();
+            paragraph.AppendText(text);
+            doc.SaveToFile(tmpFile, FileFormat.Docx);
+            File.SetAttributes(tmpFile, FileAttributes.Normal);
+            using (var stream = new FileStream(tmpFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))
             {
-                var tmpFile = Path.Combine
-                (
-                    Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                    "tmp.docx"
-                );
-
-                var section = doc.AddSection();
-                var paragraph = section.AddParagraph();
-                paragraph.AppendText(text);
-                doc.SaveToFile(tmpFile, FileFormat.Docx);
-                File.SetAttributes(tmpFile, FileAttributes.Normal);
-                using (var stream = new FileStream(tmpFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                using (var zipArchive = new ZipArchive(stream, ZipArchiveMode.Update))
                 {
-                    using (var zipArchive = new ZipArchive(stream, ZipArchiveMode.Update))
+                    string resultDoc;
+
+                    using (var xmlDoc = zipArchive.GetEntry("word/document.xml")?.Open())
                     {
-                        string resultDoc;
-
-                        using (var xmlDoc = zipArchive.GetEntry("word/document.xml").Open())
+                        using (var streamReader = new StreamReader(xmlDoc))
                         {
-                            using (var streamReader = new StreamReader(xmlDoc))
-                            {
-                                var document = streamReader.ReadToEnd();
-                                resultDoc = document.Remove(document.IndexOf("<w:p>"), 192);
-                            }
+                            var document = streamReader.ReadToEnd();
+                            resultDoc = document.Remove(document.IndexOf("<w:p>", StringComparison.Ordinal), 192);
                         }
+                    }
 
-                        using (var replacedFile = zipArchive.GetEntry("word/document.xml").Open())
+                    using (var replacedFile = zipArchive.GetEntry("word/document.xml")?.Open())
+                    {
+                        replacedFile.SetLength(resultDoc.Length);
+                        using (var writer = new StreamWriter(replacedFile))
                         {
-                            replacedFile.SetLength(resultDoc.Length);
-                            using (var writer = new StreamWriter(replacedFile))
-                            {
-                                writer.Write(resultDoc);
-                            }
+                            writer.Write(resultDoc);
                         }
                     }
                 }
-
-                var bytes = File.ReadAllBytes(tmpFile);
-                File.Delete(tmpFile);
-                return bytes;
             }
+
+            var bytes = File.ReadAllBytes(tmpFile);
+            File.Delete(tmpFile);
+            return bytes;
         }
     }
 }

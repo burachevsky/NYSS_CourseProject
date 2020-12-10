@@ -1,13 +1,12 @@
 ﻿using CrypterMobile.Services;
+using CrypterMobile.ViewModels;
 using CrypterMobile.Views;
-using Plugin.FilePicker;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CrypterMobile.ViewModels;
 using Xamarin.Forms;
 
 namespace CrypterMobile.Droid.Services
@@ -27,7 +26,6 @@ namespace CrypterMobile.Droid.Services
 
                 try
                 {
-
                     if (fileName.EndsWith(".docx"))
                     {
                         File.WriteAllBytes(fileName, Formats.ConvertToDocx(text));
@@ -71,7 +69,8 @@ namespace CrypterMobile.Droid.Services
                     }
                     else if (file.EndsWith(".txt"))
                     {
-                        contents = File.ReadAllText(file);
+                        var bytes = File.ReadAllBytes(file);
+                        contents = Encoding.GetEncoding(1251).GetString(bytes);
                     }
 
                     if (contents != null)
@@ -82,7 +81,7 @@ namespace CrypterMobile.Droid.Services
                 catch (Exception e)
                 {
                     Console.WriteLine("Exception choosing file: " + e.StackTrace);
-                    Alert.LongAlert(e.Message);
+                    Alert.LongAlert(e.GetType() + ":\n" + e.Message);
                 }
             };
 
@@ -91,6 +90,19 @@ namespace CrypterMobile.Droid.Services
             GetFileViewModel.Current.ApplyMode(GetFileViewModel.GetFileMode.Open);
 
             await filePicker;
+        }
+
+        public void CreateFolder(string path)
+        {
+            try
+            {
+                Directory.CreateDirectory(path);
+                Alert.LongAlert("Папка создана: " + path);
+            }
+            catch (Exception e)
+            {
+                Alert.LongAlert(e.Message);
+            }
         }
 
         public async Task<(string, List<DirectoryListItem>)> GetStartDirectory()
@@ -125,7 +137,7 @@ namespace CrypterMobile.Droid.Services
                 .Concat
                 (
                     Directory.EnumerateDirectories(path).Select(s => new DirectoryListItem(s.Substring(s.LastIndexOf('/') + 1), true)
-                )).ToList();
+                )).OrderBy(s => s.Name).ToList();
         }
     }
 }
