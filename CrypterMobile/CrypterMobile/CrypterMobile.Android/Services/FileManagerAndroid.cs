@@ -15,7 +15,7 @@ namespace CrypterMobile.Droid.Services
     {
         private Encoding CurrentEncoding { get; set; }
 
-        public event Action<string> OnFileNameChoosed;
+        public event Func<string, string> OnFileNameChoosed;
 
         private string[] Encodings { get; }
         private Dictionary<string, EncodingInfo> EncodingsMap { get; }
@@ -46,14 +46,19 @@ namespace CrypterMobile.Droid.Services
             CurrentEncodingName = "utf-8";
         }
 
-        public void FileNameChoosed(string fileName) => OnFileNameChoosed?.Invoke(fileName);
+        public string FileNameChoosed(string fileName) => OnFileNameChoosed?.Invoke(fileName);
 
-        public async void OpenSaveFileDialog(string text, Action OnSuccess = null)
+        public async void OpenSaveFileDialogAsync(string text, Action OnSuccess = null)
         {
-            OnFileNameChoosed = (file) =>
+            var filePicker = Shell.Current.GoToAsync(nameof(GetFilePage));
+            await filePicker;
+
+            GetFileViewModel.Current.ApplyMode(GetFileViewModel.GetFileMode.SaveAs);
+
+            OnFileNameChoosed = file =>
             {
                 if (file == null)
-                    return;
+                    return null;
 
                 try
                 {
@@ -66,31 +71,29 @@ namespace CrypterMobile.Droid.Services
                         File.WriteAllText(file, text, CurrentEncoding);
                     }
 
-                    Alert.LongAlert($"Файл сохранен по адресу: {file}");
                     OnSuccess?.Invoke();
+                    return $"Файл сохранен по адресу: {file}";
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Exception choosing file: " + ex);
-                    Alert.LongAlert(ex.Message);
+                    return ex.Message;
                 }
             };
-
-            var filePicker = Shell.Current.GoToAsync(nameof(GetFilePage));
-
-            GetFileViewModel.Current.ApplyMode(GetFileViewModel.GetFileMode.SaveAs);
-
-            await filePicker;
         }
 
-        public async void OpenReadFileDialog(Action<string> OnSuccess = null)
+        public async void OpenReadFileDialogAsync(Action<string> OnSuccess = null)
         {
-            OnFileNameChoosed = (file) =>
+            var filePicker = Shell.Current.GoToAsync(nameof(GetFilePage));
+            await filePicker;
+            GetFileViewModel.Current.ApplyMode(GetFileViewModel.GetFileMode.Open);
+
+            OnFileNameChoosed = file =>
             {
                 try
                 {
                     if (file == null)
-                        return;
+                        return null;
 
                     string contents = null;
 
@@ -109,19 +112,15 @@ namespace CrypterMobile.Droid.Services
                     {
                         OnSuccess?.Invoke(contents);
                     }
+
+                    return null;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("Exception choosing file: " + e.StackTrace);
-                    Alert.LongAlert(e.GetType() + ":\n" + e.Message);
+                    return e.GetType() + ":\n" + e.Message;
                 }
             };
-
-            var filePicker = Shell.Current.GoToAsync(nameof(GetFilePage));
-
-            GetFileViewModel.Current.ApplyMode(GetFileViewModel.GetFileMode.Open);
-
-            await filePicker;
         }
 
         public void CreateFolder(string path)

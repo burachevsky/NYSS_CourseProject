@@ -187,12 +187,12 @@ namespace CrypterMobile.ViewModels
 
         public void OpenAsync()
         {
-            fileManager.OpenReadFileDialog(text => InputText = text);
+            fileManager.OpenReadFileDialogAsync(text => InputText = text);
         }
 
         public void SaveAsync()
         {
-            fileManager.OpenSaveFileDialog(OutputText);
+            fileManager.OpenSaveFileDialogAsync(OutputText);
         }
 
         public void ShowKey()

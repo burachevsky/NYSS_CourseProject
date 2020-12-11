@@ -7,13 +7,13 @@ namespace CrypterMobile.Services
 {
     public interface IFileManager
     {
-        public void FileNameChoosed(string file);
+        public string FileNameChoosed(string file);
 
         public string CurrentEncodingName { get; set; }
 
-        public void OpenSaveFileDialog(string text, Action OnSuccess = null);
+        public void OpenSaveFileDialogAsync(string text, Action OnSuccess = null);
 
-        public void OpenReadFileDialog(Action<string> OnSuccess = null);
+        public void OpenReadFileDialogAsync(Action<string> OnSuccess = null);
 
         public Task<(string, List<DirectoryListItem>)> GetStartDirectory();
 

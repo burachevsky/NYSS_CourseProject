@@ -4,6 +4,7 @@ using CrypterMobile.Views;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
@@ -33,7 +34,7 @@ namespace CrypterMobile.ViewModels
             get => selectedItemIndex;
             set => SetProperty(ref selectedItemIndex, value, nameof(SelectedItemIndex), () =>
             {
-                if (value >= 0 && value <= DirectoryItems.Count)
+                if (value >= 0 && value < DirectoryItems.Count)
                 {
                     var item = DirectoryItems[value];
                     if (item.IsDirectory)
@@ -169,8 +170,16 @@ namespace CrypterMobile.ViewModels
 
         public async void OnOk()
         {
-            await Shell.Current.GoToAsync("..");
-            DependencyService.Get<IFileManager>().FileNameChoosed(DirectoryPath + FileName + Extension);
+            var goBack = Shell.Current.GoToAsync("..");
+            var fileWorker = Task.Run(() => DependencyService.Get<IFileManager>().FileNameChoosed(DirectoryPath + FileName + Extension));
+            
+            await Task.WhenAll(goBack, fileWorker);
+            
+            var message = fileWorker.Result;
+            if (message != null)
+            {
+                Alert.LongAlert(message);
+            }
         }
 
         public async void OnCancel()
