@@ -23,7 +23,7 @@
             <x:String x:Key="Decrypt">Дешифрование</x:String>
             <x:String x:Key="KeyMustBeValid">Ключ должен содержать хотя бы 1 символ из текущего алфавита</x:String>
             <x:String x:Key="Reverse">Инвертировать</x:String>
-            <x:String x:Key="Save">Сохранить как</x:String>
+            <x:String x:Key="Save">Сохранить как...</x:String>
             <x:String x:Key="Open">Открыть файл</x:String>
             <Color x:Key="LabelTextColor">LightSlateGray</Color>
             <Color x:Key="EditorBackgroundColor">AliceBlue</Color>

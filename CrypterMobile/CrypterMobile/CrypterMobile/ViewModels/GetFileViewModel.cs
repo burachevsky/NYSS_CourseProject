@@ -235,7 +235,7 @@ namespace CrypterMobile.ViewModels
             switch (mode)
             {
                 case GetFileMode.SaveAs:
-                    Title = "Сохранить как";
+                    Title = "Сохранить как...";
                     OkButtonText = "Сохранить";
                     IsSaveAsMode = true;
                     break;
