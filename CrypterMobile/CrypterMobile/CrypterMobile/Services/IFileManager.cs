@@ -17,7 +17,7 @@ namespace CrypterMobile.Services
 
         public Task<(string, List<DirectoryListItem>)> GetStartDirectory();
 
-        public Task<List<DirectoryListItem>> GetItemsInDirectory(string path);
+        public List<DirectoryListItem> GetItemsInDirectory(string path);
 
         public Task<(string, List<DirectoryListItem>)> GetDirectory(string dir);
 

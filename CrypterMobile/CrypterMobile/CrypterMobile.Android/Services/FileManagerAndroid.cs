@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 
 namespace CrypterMobile.Droid.Services
 {
@@ -138,19 +137,22 @@ namespace CrypterMobile.Droid.Services
             }
         }
 
-        public async Task<(string, List<DirectoryListItem>)> GetStartDirectory()
+        public Task<(string, List<DirectoryListItem>)> GetStartDirectory()
         {
-            return await GetDirectory(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath);
+            return GetDirectory(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath);
         }
 
-        public async Task<(string, List<DirectoryListItem>)> GetDirectory(string dir)
+        public Task<(string, List<DirectoryListItem>)> GetDirectory(string dir)
         {
-            if (!dir.EndsWith('/'))
+            return Task.Run(() =>
             {
-                dir += '/';
-            }
+                if (!dir.EndsWith('/'))
+                {
+                    dir += '/';
+                }
 
-            return (dir, await GetItemsInDirectory(dir));
+                return (dir, GetItemsInDirectory(dir));
+            });
         }
 
         public bool IsRoot(string dir)
@@ -163,15 +165,17 @@ namespace CrypterMobile.Droid.Services
             return Android.OS.Environment.ExternalStorageDirectory.AbsolutePath.Equals(dir);
         }
 
-        public async Task<List<DirectoryListItem>> GetItemsInDirectory(string path)
+        public List<DirectoryListItem> GetItemsInDirectory(string path)
         {
             return Directory.EnumerateFiles(path)
                 .Select(s => new DirectoryListItem(s.Substring(s.LastIndexOf('/') + 1), false))
                 .Concat
                 (
-                    Directory.EnumerateDirectories(path).Select(
-                        s => new DirectoryListItem(s.Substring(s.LastIndexOf('/') + 1), true)
-                    )).OrderBy(s => s.Name).ToList();
+                    Directory.EnumerateDirectories(path)
+                        .Select(s => new DirectoryListItem(s.Substring(s.LastIndexOf('/') + 1), true))
+                )
+                .OrderBy(s => s.Name)
+                .ToList();
         }
 
         public string[] GetAvailableEncodings()
