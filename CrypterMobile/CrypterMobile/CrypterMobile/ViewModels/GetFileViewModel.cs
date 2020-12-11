@@ -1,10 +1,12 @@
-﻿using CrypterMobile.Services;
+﻿using System;
+using CrypterMobile.Services;
+using CrypterMobile.Views;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using CrypterMobile.Views;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace CrypterMobile.ViewModels
 {
@@ -18,9 +20,10 @@ namespace CrypterMobile.ViewModels
         private int selectedItemIndex;
         private string okButtonText;
         private bool isSaveAsMode;
+        private string currentEncodingName;
 
         public GetFileMode Mode { get; private set; }
-        
+
         public static GetFileViewModel Current { get; private set; }
 
         public ObservableCollection<string> Extensions { get; } = new ObservableCollection<string> { ".docx", ".txt" };
@@ -103,11 +106,18 @@ namespace CrypterMobile.ViewModels
             set => SetProperty(ref isSaveAsMode, value, nameof(IsSaveAsMode));
         }
 
+        public string CurrentEncodingName
+        {
+            get => currentEncodingName;
+            set => SetProperty(ref currentEncodingName, value, nameof(CurrentEncodingName));
+        }
+
         public ICommand OkCommand { get; }
         public ICommand CancelCommand { get; }
         public ICommand RefreshCommand { get; }
         public ICommand PrevDirCommand { get; }
         public ICommand CreateFolderCommand { get; }
+        public ICommand ChangeEncodingCommand { get; }
 
         public GetFilePage Page { get; set; }
 
@@ -119,9 +129,11 @@ namespace CrypterMobile.ViewModels
             RefreshCommand = new Command(OnRefresh);
             PrevDirCommand = new Command(OnPrevDir);
             CreateFolderCommand = new Command(CreateFolder);
+            ChangeEncodingCommand = new Command(OnChangeEncoding);
             ExtensionIndex = 0;
             FileName = string.Empty;
             CanSave = false;
+            CurrentEncodingName = DependencyService.Get<IFileManager>().CurrentEncodingName;
             var dir = DependencyService.Get<IFileManager>().GetStartDirectory().Result;
             UpdateDir(dir);
         }
@@ -167,15 +179,41 @@ namespace CrypterMobile.ViewModels
             DependencyService.Get<IFileManager>().FileNameChoosed(null);
         }
 
+        public async void OnChangeEncoding()
+        {
+            try
+            {
+                var encoding = await Page.DisplayActionSheet
+                (
+                    "Выбор кодировки",
+                    "Отменить",
+                    null,
+                    DependencyService.Get<IFileManager>().GetAvailableEncodings()
+                );
+
+                if (encoding != null && !encoding.Equals("Отменить"))
+                {
+                    DependencyService.Get<IFileManager>().CurrentEncodingName = encoding;
+                    CurrentEncodingName = encoding;
+                    Alert.ShortAlert("Кодировка изменена: " + encoding);
+                }
+            }
+
+            catch (Exception e)
+            {
+                Alert.LongAlert(e.GetType() + ":\n" + e.Message);
+            }
+        }
+
         public async void CreateFolder()
         {
-            string folderName = await Page.DisplayPromptAsync("Создание папки", "Введите название", "Создать", "Отменить");
+            var folderName = await Page.DisplayPromptAsync("Создание папки", "Введите название", "Создать", "Отменить");
 
             if (folderName == null)
             {
                 return;
             }
-            
+
             DependencyService.Get<IFileManager>().CreateFolder(DirectoryPath + folderName);
 
             OnRefresh();

@@ -8,34 +8,66 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace CrypterMobile.Droid.Services
 {
     public class FileManagerAndroid : IFileManager
     {
+        private Encoding CurrentEncoding { get; set; }
+
         public event Action<string> OnFileNameChoosed;
+
+        private string[] Encodings { get; }
+        private Dictionary<string, EncodingInfo> EncodingsMap { get; }
+
+        private string currentEncodingName;
+        public string CurrentEncodingName
+        {
+            get => currentEncodingName;
+            set
+            {
+                currentEncodingName = value;
+                CurrentEncoding = EncodingsMap[value].GetEncoding();
+            }
+        }
+
+        public FileManagerAndroid()
+        {
+            var encodings = Encoding.GetEncodings();
+
+            EncodingsMap = new Dictionary<string, EncodingInfo>();
+
+            foreach (var enc in encodings)
+            {
+                EncodingsMap.TryAdd(enc.Name, enc);
+            }
+
+            Encodings = EncodingsMap.Keys.ToArray();
+            CurrentEncodingName = "utf-8";
+        }
 
         public void FileNameChoosed(string fileName) => OnFileNameChoosed?.Invoke(fileName);
 
         public async void OpenSaveFileDialog(string text, Action OnSuccess = null)
         {
-            OnFileNameChoosed = fileName =>
+            OnFileNameChoosed = (file) =>
             {
-                if (fileName == null)
+                if (file == null)
                     return;
 
                 try
                 {
-                    if (fileName.EndsWith(".docx"))
+                    if (file.EndsWith(".docx"))
                     {
-                        File.WriteAllBytes(fileName, Formats.ConvertToDocx(text));
+                        File.WriteAllBytes(file, Formats.ConvertToDocx(text));
                     }
-                    else if (fileName.EndsWith(".txt"))
+                    else if (file.EndsWith(".txt"))
                     {
-                        File.WriteAllText(fileName, text);
+                        File.WriteAllText(file, text, CurrentEncoding);
                     }
 
-                    Alert.LongAlert($"Файл сохранен по адресу: {fileName}");
+                    Alert.LongAlert($"Файл сохранен по адресу: {file}");
                     OnSuccess?.Invoke();
                 }
                 catch (Exception ex)
@@ -54,7 +86,7 @@ namespace CrypterMobile.Droid.Services
 
         public async void OpenReadFileDialog(Action<string> OnSuccess = null)
         {
-            OnFileNameChoosed = file =>
+            OnFileNameChoosed = (file) =>
             {
                 try
                 {
@@ -69,8 +101,9 @@ namespace CrypterMobile.Droid.Services
                     }
                     else if (file.EndsWith(".txt"))
                     {
+
                         var bytes = File.ReadAllBytes(file);
-                        contents = Encoding.GetEncoding(1251).GetString(bytes);
+                        contents = CurrentEncoding.GetString(bytes);
                     }
 
                     if (contents != null)
@@ -136,8 +169,14 @@ namespace CrypterMobile.Droid.Services
                 .Select(s => new DirectoryListItem(s.Substring(s.LastIndexOf('/') + 1), false))
                 .Concat
                 (
-                    Directory.EnumerateDirectories(path).Select(s => new DirectoryListItem(s.Substring(s.LastIndexOf('/') + 1), true)
-                )).OrderBy(s => s.Name).ToList();
+                    Directory.EnumerateDirectories(path).Select(
+                        s => new DirectoryListItem(s.Substring(s.LastIndexOf('/') + 1), true)
+                    )).OrderBy(s => s.Name).ToList();
+        }
+
+        public string[] GetAvailableEncodings()
+        {
+            return Encodings;
         }
     }
 }

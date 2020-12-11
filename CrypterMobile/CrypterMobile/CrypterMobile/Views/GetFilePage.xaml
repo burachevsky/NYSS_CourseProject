@@ -19,6 +19,9 @@
         <ToolbarItem Order="Secondary" 
                      Text="Создать папку" 
                      Command="{Binding CreateFolderCommand}" />
+        <ToolbarItem Order="Secondary" 
+                     Text="{Binding CurrentEncodingName}" 
+                     Command="{Binding ChangeEncodingCommand}" />
     </ContentPage.ToolbarItems>
 
 

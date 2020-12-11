@@ -7,7 +7,9 @@ namespace CrypterMobile.Services
 {
     public interface IFileManager
     {
-        public void FileNameChoosed(string fileName);
+        public void FileNameChoosed(string file);
+
+        public string CurrentEncodingName { get; set; }
 
         public void OpenSaveFileDialog(string text, Action OnSuccess = null);
 
@@ -22,5 +24,7 @@ namespace CrypterMobile.Services
         public bool IsRoot(string dir);
 
         public void CreateFolder(string path);
+
+        public string[] GetAvailableEncodings();
     }
 }
